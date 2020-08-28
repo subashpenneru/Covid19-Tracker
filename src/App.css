@@ -20,23 +20,10 @@
     font-size: 2rem;
 }
 
-.app__dropdown {
-    background-color: white;
-}
-
 .app__stats {
     display: flex;
     justify-content: space-between;
 }
-
-/* .app__right {
-    display: flex;
-    flex-direction: column;
-}
-
-.app__right .MultiCardContent-root {
-
-} */
 
 @media (max-width: 868px) {
     .app {

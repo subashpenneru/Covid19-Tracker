@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
   FormControl,
-  Select,
-  MenuItem,
   Card,
   CardContent,
+  TextField,
+  LinearProgress,
 } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 
 import InfoBox from './InfoBox';
 import Map from './Map';
@@ -25,19 +26,24 @@ const App = () => {
   const [mapZoom, setMapZoom] = useState(3);
   const [mapCountries, setMapCountries] = useState([]);
   const [casesType, setCasesType] = useState('cases');
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchData = async () => {
     try {
       const res = await axios.get('countries');
-      const countries = res.data.map((ctry) => ({
+
+      let countries = res.data.map((ctry) => ({
         name: ctry.country,
         value: ctry.countryInfo.iso2,
         id: ctry.countryInfo._id,
       }));
 
+      countries = [{ name: 'Worldwide', value: 'worldwide' }, ...countries];
+
       setCountries(countries);
       setTableData(sortData(res.data));
       setMapCountries(res.data);
+      setIsLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -61,9 +67,12 @@ const App = () => {
     fetchData();
   }, []);
 
-  const onCountryChange = async (e) => {
-    const countryCode = e.target.value;
+  const onCountryChange = async (e, ctry) => {
+    if (!ctry) {
+      return;
+    }
 
+    const countryCode = ctry.value;
     const url =
       countryCode === 'worldwide' ? 'all' : `countries/${countryCode}`;
 
@@ -73,10 +82,15 @@ const App = () => {
       setCountry(countryCode);
       setCountryInfo(res.data);
 
-      const obj = {
-        lat: res.data.countryInfo.lat,
-        lng: res.data.countryInfo.long,
-      };
+      let obj;
+      if (countryCode !== 'worldwide') {
+        obj = {
+          lat: res.data.countryInfo.lat,
+          lng: res.data.countryInfo.long,
+        };
+      } else {
+        obj = { lat: 34.80746, lng: -40.4796 };
+      }
 
       setMapCenter(obj);
       setMapZoom(4);
@@ -85,13 +99,17 @@ const App = () => {
     }
   };
 
+  if (isLoading) {
+    return <LinearProgress />;
+  }
+
   return (
     <div className='app'>
       <div className='app__left'>
         <div className='app__header'>
           <h1>COVID19 TRACKER</h1>
           <FormControl className='app__dropdown'>
-            <Select
+            {/* <Select
               variant='outlined'
               value={country}
               onChange={onCountryChange}>
@@ -103,7 +121,26 @@ const App = () => {
                   {ctry.name}
                 </MenuItem>
               ))}
-            </Select>
+            </Select> */}
+            <Autocomplete
+              value={country}
+              onChange={(e, ctry) => onCountryChange(e, ctry)}
+              style={{ width: '150px', backgroundColor: 'white' }}
+              options={countries}
+              getOptionLabel={(option) =>
+                option.name
+                  ? option.name
+                  : countries.find((ctry) => ctry.value === country).name
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label='Countries'
+                  value={country}
+                  variant='outlined'
+                />
+              )}
+            />
           </FormControl>
         </div>
 
