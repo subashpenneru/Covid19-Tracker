@@ -1,34 +1,46 @@
 .infoBox {
-    flex: 1;
-    cursor: pointer;
+  flex: 1;
+  cursor: pointer;
+  border-top: 10px solid white;
 }
 
 .infoBox:not(:last-child) {
-    margin-right: 15px;
+  margin-right: 15px;
 }
 
 .infoBox__cases {
-    color: #cc1034;
-    font-weight: 600;
-    font-size: 1.75rem;
-    margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .infoBox__total {
-    color: #6c757d;
-    font-weight: 700 !important;
-    font-size: 0.8rem !important;
-    margin-top: 15px !important;
+  color: #6c757d;
+  font-weight: 700 !important;
+  font-size: 0.8rem !important;
+  margin-top: 15px !important;
+}
+
+.infoBox__border--cases {
+  border-top: 10px solid #CC1034 !important;
+}
+
+.infoBox__border--recovered {
+  border-top: 10px solid #7dd71d !important;
+}
+
+.infoBox__border--deaths {
+  border-top: 10px solid #fb4443 !important;
 }
 
 .infoBox--cases {
-    color: #CC1034;
+  color: #CC1034;
 }
 
-.infoBox__recovered {
-    color: #7dd71d;
+.infoBox--recovered {
+  color: #7dd71d;
 }
 
-.infoBox__deaths {
-    color: #fb4443;
+.infoBox--deaths {
+  color: #fb4443;
 }
