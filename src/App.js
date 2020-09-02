@@ -183,8 +183,11 @@ const App = () => {
           <h3>Live Cases WorldWide</h3>
           <Table countries={tableData} />
           <div style={{ marginTop: '10px' }}>
-            <h3>Worldwide {casesType} details past 120days</h3>
-            <LineGraph casesType={casesType} />
+            <h3>
+              {countryInfo.country || 'Worldwide'} {casesType} details past
+              120days
+            </h3>
+            <LineGraph country={country} casesType={casesType} />
           </div>
         </CardContent>
       </Card>
