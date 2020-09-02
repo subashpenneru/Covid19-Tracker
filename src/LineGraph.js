@@ -50,29 +50,42 @@ const options = {
   },
 };
 
-const LineGraph = ({ casesType }) => {
+const LineGraph = ({ country, casesType }) => {
   const [data, setData] = useState({
     labels: [],
     values: [],
   });
+  const [error, setError] = useState('');
 
   useEffect(() => {
+    setError('');
     const fetchData = async () => {
-      try {
-        const res = await axios.get('historical/all?lastdays=120');
+      let url = 'historical/all?lastdays=120';
 
-        const chartData = buildChartData(res.data, casesType);
+      if (country !== 'worldwide') {
+        url = `historical/${country}?lastdays=120`;
+      }
+
+      try {
+        const res = await axios.get(url);
+
+        const chartData = buildChartData(
+          res.data.timeline || res.data,
+          casesType
+        );
+
         setData({
           labels: chartData.map((ele) => ele.x),
           values: chartData.map((ele) => ele.y),
         });
       } catch (err) {
-        console.error(err);
+        console.error(err.message);
+        setError("Country doesn't have any historical data");
       }
     };
 
     fetchData();
-  }, [casesType]);
+  }, [casesType, country]);
 
   const buildChartData = (data, casesType = 'cases') => {
     const chartData = [];
@@ -94,7 +107,8 @@ const LineGraph = ({ casesType }) => {
 
   return (
     <div style={{ position: 'relative', width: '100%' }}>
-      {data && (
+      {error && <p style={{ marginTop: '20px' }}>{error}</p>}
+      {!error && data && (
         <Line
           options={options}
           data={{
